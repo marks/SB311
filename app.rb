@@ -1,3 +1,5 @@
+require 'rubygems'
+require 'net/https'
 require 'bundler'
 Bundler.require
 

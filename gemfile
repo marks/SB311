@@ -1,10 +1,8 @@
 source "https://rubygems.org"
 
-ruby '2.0.0'
+ruby '2.1.0'
 
-gem 'rubygems'
 gem 'sinatra'
-gem 'net/https'
 gem 'json'
 gem 'data_mapper'
 gem 'dm-timestamps'
