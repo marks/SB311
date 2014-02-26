@@ -1,0 +1,13 @@
+source "https://rubygems.org"
+
+ruby '2.0.0'
+
+gem 'rubygems'
+gem 'sinatra'
+gem 'net/https'
+gem 'json'
+gem 'data_mapper'
+gem 'dm-timestamps'
+gem 'dm-core'
+gem 'dm-migrations'
+gem 'dm-postgres-adapter'

@@ -1,13 +1,5 @@
 require 'bundler'
-require 'rubygems'
-require 'sinatra'
-require 'net/https'
-require 'json'
-require 'data_mapper'
-require 'dm-timestamps'
-require 'dm-core'
-require 'dm-migrations'
-require 'dm-postgres-adapter'
+Bundler.require
 
 # This section sets up the goals database with a goals table
 # OLD - DataMapper::setup(:default, "sqlite://#{Dir.pwd}/SBthree.db")
