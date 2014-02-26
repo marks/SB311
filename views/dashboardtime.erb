@@ -1,0 +1,172 @@
+<center><h1>Current Southbend Indiana 311 Call Time Stats</h1></center>
+<hr>
+<title>Time Stats</title>
+<!-- Calls Graph -->
+<div class="row">
+<div class="col-md-10 col-md-offset-1">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript">
+            $(function () {
+                    $('#container2').highcharts({
+                        title: {
+                            text: 'Time Trend',
+                            x: -20 //center
+                        },
+                        chart: {
+                            type: 'line',
+                            zoomType: 'xy',
+                            plotBackgroundColor: '#EEEEEE'
+                        },
+                        subtitle: {
+                            text: '',
+                            x: -20
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Seconds'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: ' Seconds'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            borderWidth: 0
+                        },
+                        series: <%= @series_to_graph_time.to_json %>
+                    });
+                });
+                </script>
+            <div id="container2" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+            <script src="/Highcharts-3.0.5/js/highcharts.js"></script>
+    </div>
+</div>
+<hr>
+<div class="row">
+<div class="col-md-6">
+    <script type="text/javascript">
+$(function () {
+        $('#container3').highcharts({
+            chart: {
+                type: 'column',
+                zoomType: 'xy',
+                plotBackgroundColor: '#EEEEEE'
+            },
+            title: {
+                text: 'Average Handle and Wait Times By Week'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    text: ''
+                    },
+                type: 'date',
+                labels: {
+                enabled: false
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Seconds'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.0f} Second</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                series: {
+                stacking: 'normal'
+                },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: <%= @series_to_graph_time_week.to_json %>
+        });
+    });
+    </script>
+    <div id="container3" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+    <div class="col-md-6">
+        <script type="text/javascript">
+$(function () {
+        $('#container4').highcharts({
+            chart: {
+                type: 'column',
+                zoomType: 'xy',
+                plotBackgroundColor: '#EEEEEE'
+            },
+            title: {
+                text: 'Average Handle and Wait Times By Month'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    text: ''
+                    },
+                type: 'date',
+                labels: {
+                enabled: false
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Seconds'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.0f} Seconds</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                series: {
+                stacking: 'normal'
+                },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: <%= @series_to_graph_month.to_json %>
+        });
+    });
+    </script>
+    <div id="container4" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+</div>

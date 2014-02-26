@@ -1,0 +1,90 @@
+<div class="row">
+<div class="col-md-10 col-md-offset-1">
+<div class="well">
+  <center><h1>South Bend 311</h1></center>
+  <center><h2><i>Leveraging <a href="https://data.southbendin.gov/">open South Bend Indiana data</a> to show 311 call volumne</i></h2></center>
+</div>
+</div>
+<!-- Main Page Timeseries Graph -->
+<div class="row">
+<div class="col-md-10 col-md-offset-1">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript">
+            $(function () {
+                    $('#mpallcall').highcharts({
+                        title: {
+                            text: '',
+                            x: -20 //center
+                        },
+                        chart: {
+                            type: 'line',
+                            zoomType: 'xy',
+                            plotBackgroundColor: '#EEEEEE'
+                        },
+                        subtitle: {
+                            text: '',
+                            x: -20
+                        },
+                        xAxis: {
+                        	type: 'datetime',
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Number of Calls'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: ' Calls'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            borderWidth: 0
+                        },
+                        series: <%= @series_to_graph_allcall.to_json %>
+                    });
+                });
+            	</script>
+            <script src="/Highcharts-3.0.5/js/highcharts.js"></script>
+            <div id="mpallcall" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+</div>
+<hr>
+<!-- Stats Panels -->
+<div class="row">
+<div class="col-md-5 col-md-offset-1">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><center><b>Call Volumne Statistics</b></center></div>
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item">Total Calls <span class="badge"><b><%= @sum_total_calls %></b></span></li>
+    <li class="list-group-item">Calls Abandoned<span class="badge"><b><%= @sum_calls_abandoned %></b></span></li>
+    <li class="list-group-item">Calls Deqeued<span class="badge"><b><%= @sum_calls_deqeued %></b></span></li>
+    <li class="list-group-item">Percent Abandoned<span class="badge"><b><%= @percent_abandoned %> %</b></span></li>
+  </ul>
+</div>
+</div>
+<div class="col-md-5 col-md-offset-0">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><center><b>Call Time Statistics (in seconds)</b></center></div>
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item">Average Wait Time<span class="badge"><b><%= @avg_waittime %></b></span></li>
+    <li class="list-group-item">Average Handle Time<span class="badge"><b><%= @avg_handletime %></b></span></li>
+    <li class="list-group-item">Average Time To Abandon<span class="badge"><b><%= @avg_dequeuetime %></b></span></li>
+  </ul>
+</div>
+</div>
+</div>

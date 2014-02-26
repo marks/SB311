@@ -1,0 +1,172 @@
+<center><h1>Current Southbend Indiana 311 Call Stats</h1></center>
+<hr>
+<title>Calls Stats</title>
+<!-- Calls Graph -->
+<div class="row">
+<div class="col-md-10 col-md-offset-1">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript">
+            $(function () {
+                    $('#container').highcharts({
+                        title: {
+                            text: 'Call Trend',
+                            x: -20 //center
+                        },
+                        chart: {
+                            type: 'line',
+                            zoomType: 'xy',
+                            plotBackgroundColor: '#EEEEEE'
+                        },
+                        subtitle: {
+                            text: '',
+                            x: -20
+                        },
+                        xAxis: {
+                        	type: 'datetime',
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Number of Calls'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                        tooltip: {
+                            valueSuffix: ' Calls'
+                        },
+                        credits: {
+                            enabled: false
+                        },
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            borderWidth: 0
+                        },
+                        series: <%= @series_to_graph_call.to_json %>
+                    });
+                });
+            	</script>
+            <script src="/Highcharts-3.0.5/js/highcharts.js"></script>
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+</div>
+<hr>
+<div class="row">
+<div class="col-md-6">
+    <script type="text/javascript">
+$(function () {
+        $('#container3').highcharts({
+            chart: {
+                type: 'column',
+                zoomType: 'xy',
+                plotBackgroundColor: '#EEEEEE'
+            },
+            title: {
+                text: 'Total and Abandoned Calls by Week'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    text: ''
+                    },
+                type: 'date',
+                labels: {
+                enabled: false
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Calls'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.0f} Calls</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                series: {
+                stacking: 'normal'
+                },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: <%= @series_to_graph_week.to_json %>
+        });
+    });
+    </script>
+    <div id="container3" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+    <div class="col-md-6">
+        <script type="text/javascript">
+$(function () {
+        $('#container4').highcharts({
+            chart: {
+                type: 'column',
+                zoomType: 'xy',
+                plotBackgroundColor: '#EEEEEE'
+            },
+            title: {
+                text: 'Total and Abandoned Calls by Month'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    text: ''
+                    },
+                type: 'date',
+                labels: {
+                enabled: false
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Calls'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.0f} Calls</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                series: {
+                stacking: 'normal'
+                },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: <%= @series_to_graph_month.to_json %>
+        });
+    });
+    </script>
+    <div id="container4" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    </div>
+</div>
