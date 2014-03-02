@@ -131,7 +131,7 @@ get "/userreport" do
   @callsnotabandonedpie = {:name => "Calls Not Abandoned", :data => @rangecallsnotabandoned},
   @callsabandonedpie = {:name => "Calls Abandoned", :data => @rangesumcallabandoned}
   @timewaithandlegraph = [
-    {:name => "Average Time to Handle", :data => DataMapper.repository.adapter.select("SELECT to_char(date,'Day, YYYY-MM-DD') AS date_num,AVG(avg_handle_time) AS avg_avg_handle_time, to_char(date, 'Day, YYYY-MM-DD')AS date_text FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}' GROUP by date_num, date_text ORDER BY date_text").map{|i| [i.date_text, i.avg_avg_handle_time.to_i]}},
+    {:name => "Average Time to Handle", :data => DataMapper.repository.adapter.select("SELECT to_char(date,'YYYY-MM-DD') AS date_num,AVG(avg_handle_time) AS avg_avg_handle_time, to_char(date, 'YYYY-MM-DD')AS date_text FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}' GROUP by date_num, date_text ORDER BY date_text").map{|i| [i.date_text, i.avg_avg_handle_time.to_i]}},
     {:name => "Average Wait Time", :data => DataMapper.repository.adapter.select("SELECT to_char(date,'YYYY-MM-DD') AS date_num,AVG(avg_queue_time) AS avg_avg_queue_time, to_char(date, 'YYYY-MM-DD')AS date_text FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}' GROUP by date_num, date_text ORDER BY date_text").map{|i| [i.date_text, i.avg_avg_queue_time.to_i]}}
   ]
 
