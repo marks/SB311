@@ -50,7 +50,7 @@ class ContactCallData
   property :work_group_define, Text
   property :close_date_calc, DateTime
   property :work_group_description, Text
-  property :call_tpe_description, Text
+  property :call_type_description, Text
 
   property :created_at, DateTime
   property :updated_at, DateTime
