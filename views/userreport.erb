@@ -1,0 +1,171 @@
+<div class="col-md-8 col-md-offset-2">
+		<form class="form-inline" role="post">
+    		<div class="well">
+    			<div class="form-group">
+        			<label for="from_date" class="control-label">Report Start Date:</label>
+        			<input type="date" class="form-control" name="from_date" value=<%= params[:from_date] %>>
+        		</div>
+        			&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+        		<div class="form-group">
+        			<label for="to_date" class="control-label">Report End Date:</label>
+        			<input type="date" class="form-control" name="to_date" value=<%= params[:to_date] %>>
+        		</div>
+        			&nbsp
+        			<button type="submit" class="btn btn-primary btn-right active">Run Report</button>
+    		</div>
+		</form>
+        <hr>
+	</div>
+</div>
+<!-- Stats Panels -->
+<div class="row">
+<div class="col-md-5 col-md-offset-1">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><center><b>Call Volume Statistics</b></center></div>
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item">Total Calls <span class="badge"><b><%= @rangesumcallhandeld%></b></span></li>
+    <li class="list-group-item">Calls Abandoned<span class="badge"><b><%= @rangesumcallabandoned %></b></span></li>
+    <li class="list-group-item">Calls Deqeued<span class="badge"><b><%= @rangesumcalldequeued %></b></span></li>
+    <li class="list-group-item">Percent Abandoned<span class="badge"><b><%= @rangepercentabandoned %></b> %</span></li>
+  </ul>
+</div>
+</div>
+<div class="col-md-5 col-md-offset-0">
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><center><b>Call Time Statistics</b></center></div>
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item">Average Wait Time<span class="badge"><b><%= @rangeavgwaittime %></b> Seconds</span></li>
+    <li class="list-group-item">Average Handle Time<span class="badge"><b><%= @rangeavghandletime %></b> Seconds</span></li>
+    <li class="list-group-item">Average Time To Abandon<span class="badge"><b><%= @rangeavgtimetoabandon %></b> Seconds</span></li>
+    <li class="list-group-item">Average Max Handle Time<span class="badge"><b><%= @rangeavgmaxhandletime %></b> Seconds </span></li>
+  </ul>
+</div>
+</div>
+</div>
+<!-- Pie Chart -->
+<div class="row">
+<hr>
+<div class="col-md-5 col-md-offset-1">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script type="text/javascript">
+$(function () {
+        
+        // Radialize the colors
+        Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+            return {
+                radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+                stops: [
+                    [0, color],
+                    [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+                ]
+            };
+        });
+        
+        // Build the chart
+        $('#container').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: 'Calls Not Abandoned vs. Calls Abandoned'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        color: '#000000',
+                        connectorColor: '#000000',
+                        formatter: function() {
+                            return '<b>'+ this.point.name +'</b>: '+ this.y +' Calls';
+                        }
+                    }
+                }
+            },
+            credits: {
+                            enabled: false
+                        },
+            series: [{
+                type: 'pie',
+                name: 'Percent of Calls',
+                data: [
+                    ['Not Abandoned', <%= @rangecallsnotabandoned %>],
+                    ['Abandoned', <%= @rangesumcallabandoned %>]
+                ]
+            }]
+        });
+    });
+        </script>
+<script src="/Highcharts-3.0.5/js/highcharts.js"></script>
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</div>
+<!-- Bar Graph -->
+<div class="row">
+<div class="col-md-5 col-md-offset-0">
+ <script type="text/javascript">
+$(function () {
+        $('#container3').highcharts({
+            chart: {
+                type: 'column',
+                zoomType: 'xy',
+                plotBackgroundColor: '#EEEEEE'
+            },
+            title: {
+                text: 'Average Handle and Wait Times By Day'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                title: {
+                    text: ''
+                    },
+                type: 'date',
+                labels: {
+                enabled: false
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Seconds'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y:.0f} Seconds</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                series: {
+                stacking: 'normal'
+                },
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: <%= @timewaithandlegraph.to_json %>
+        });
+    });
+    </script>
+    <div id="container3" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+</div>
+</div>
+<hr>

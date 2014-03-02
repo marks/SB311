@@ -1,15 +1,16 @@
 require 'rubygems'
 require 'net/https'
 require 'bundler'
+require 'date'
+require 'time'
+
 Bundler.require
 
-# This section sets up the goals database with a goals table
-# OLD - DataMapper::setup(:default, "sqlite://#{Dir.pwd}/SBthree.db")
 DataMapper.setup(:default, ENV['DATABASE_URL'] || "postgres://localhost/ThreeOneOne")
 
 class DailyCallData
   include DataMapper::Resource
-  # property :id, Serial # 
+
   property :date, Date, :key => true # set date as the (primary) key
   property :avg_queue_time, Integer
   property :max_handle_time, Integer
@@ -98,12 +99,49 @@ get "/dashboardtime" do
     {:name => "Average Handle Time", :data => DataMapper.repository.adapter.select("SELECT to_char(date,'YYYY-WW') AS week_num,AVG(avg_handle_time) AS avg_avg_handle_time, to_char(date, 'YYYY-WW')AS week_text FROM daily_call_data GROUP by week_num, week_text ORDER BY week_text").map{|i| [i.week_text, i.avg_avg_handle_time.to_i]}}
     ]
 
-    @series_to_graph_month = [
+  @series_to_graph_month = [
     {:name => "Average Wait Time", :data => DataMapper.repository.adapter.select("SELECT to_char(date, 'YYYY-MM') AS month_order_by, AVG(avg_queue_time) AS avg_avg_month_queue, to_char(date,  'Mon YYYY' ) AS month_text FROM daily_call_data GROUP by month_order_by, month_text ORDER BY month_order_by").map{|i| [i.month_text, i.avg_avg_month_queue.to_i]}},
     {:name => "Average Handle Time", :data => DataMapper.repository.adapter.select("SELECT to_char(date, 'YYYY-MM') AS month_order_by, AVG(avg_handle_time) AS avg_avg_month_handle_time, to_char(date,  'Mon YYYY' ) AS month_text FROM daily_call_data GROUP by month_order_by, month_text ORDER BY month_order_by").map{|i| [i.month_text, i.avg_avg_month_handle_time.to_i]}}
     ]
 
   erb :dashboardtime
+end
+
+get "/userreport" do
+
+  all = DailyCallData.all
+
+  params[:to_date] = Date.today.to_s if params[:to_date].to_s == ""
+  params[:from_date] = (Date.today-30).to_s if params[:from_date].to_s == ""
+  
+  # queries
+  @rangesumcallhandeld = DataMapper.repository.adapter.select("SELECT SUM(callshandled) FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}'").first
+  @rangesumcallabandoned = DataMapper.repository.adapter.select("SELECT SUM(callsabandoned) FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}'").first
+  @rangesumcalldequeued = DataMapper.repository.adapter.select("SELECT SUM(calls_dequeued) FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}'").first
+  @rangeavgwaittime = DataMapper.repository.adapter.select("SELECT AVG(avg_queue_time) FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}'").first.to_f.round(2)
+  @rangeavghandletime = DataMapper.repository.adapter.select("SELECT AVG(avg_handle_time) FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}'").first.to_f.round(2)
+  @rangeavgtimetoabandon = DataMapper.repository.adapter.select("SELECT AVG(avg_time_toabandon) FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}'").first.to_f.round(2)
+  @rangeavgmaxhandletime = DataMapper.repository.adapter.select("SELECT AVG(max_handle_time) FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}'").first.to_f.round(2)
+
+  # calculations
+  @rangecallsnotabandoned = @rangesumcallhandeld - @rangesumcallabandoned
+  @rangepercentabandoned = (@rangesumcallabandoned/@rangesumcallhandeld.to_f).round(3)*100
+  
+  # graphs
+  @callsnotabandonedpie = {:name => "Calls Not Abandoned", :data => @rangecallsnotabandoned},
+  @callsabandonedpie = {:name => "Calls Abandoned", :data => @rangesumcallabandoned}
+  @timewaithandlegraph = [
+    {:name => "Average Time to Handle", :data => DataMapper.repository.adapter.select("SELECT to_char(date,'Day, YYYY-MM-DD') AS date_num,AVG(avg_handle_time) AS avg_avg_handle_time, to_char(date, 'Day, YYYY-MM-DD')AS date_text FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}' GROUP by date_num, date_text ORDER BY date_text").map{|i| [i.date_text, i.avg_avg_handle_time.to_i]}},
+    {:name => "Average Wait Time", :data => DataMapper.repository.adapter.select("SELECT to_char(date,'YYYY-MM-DD') AS date_num,AVG(avg_queue_time) AS avg_avg_queue_time, to_char(date, 'YYYY-MM-DD')AS date_text FROM daily_call_data WHERE date BETWEEN '#{params[:from_date]}' and '#{params[:to_date]}' GROUP by date_num, date_text ORDER BY date_text").map{|i| [i.date_text, i.avg_avg_queue_time.to_i]}}
+  ]
+
+  erb :userreport
+end
+
+post "/userreport" do
+  @filter = Filter.new
+  filter.fromdate = params[:from_date]
+  filter.todate = params[:to_date]
 end
 
 get "/about" do
