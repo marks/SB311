@@ -38,10 +38,32 @@ end
 
 DataMapper.finalize.auto_upgrade!
 
+class ContactCallData
+  include DataMapper::Resource
+
+  property :call_id, Integer, :key => true #set as the primary key
+  property :call_type_code, Text
+  property :entry_year, Integer
+  property :entry_month, Integer
+  property :call_status, Integer
+  property :entry_date_calc, DateTime
+  property :work_group_define, Text
+  property :close_date_calc, DateTime
+  property :work_group_description, Text
+  property :call_tpe_description, Text
+
+  property :created_at, DateTime
+  property :updated_at, DateTime
+
+end
+
+DataMapper.finalize.auto_upgrade!
+
 ##############################################
 
 get "/" do
   @data = DailyCallData.all # get all the rows from the database
+  @ContactCallData = ContactCallData.all #gets all contact call data from database
   
   @series_to_graph_allcall = [
     {:name => "Calls Handled", :data => DailyCallData.all.map{|i| [i.date.to_time.to_i*1000, i.total_calls_handled.to_i]}}
