@@ -3,6 +3,7 @@ require 'net/https'
 require 'bundler'
 require 'date'
 require 'time'
+require 'open-uri'
 
 Bundler.require
 
@@ -58,6 +59,7 @@ class ContactCallData
 end
 
 DataMapper.finalize.auto_upgrade!
+
 
 ##############################################
 

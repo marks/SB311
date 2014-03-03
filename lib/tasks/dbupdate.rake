@@ -17,7 +17,7 @@ task :loaddatabase do
 
 	rows.each do |row_data|
 	  print "Processing row where date=#{row_data["date"]} ..."
-	  db_row = DailyCallData.get(:date => row_data["date"])#.first
+	  db_row = DailyCallData.get(:date => row_data["date"])
 	  begin 
 	    if DailyCallData.create(row_data)
 	      print " ... inserted it int the DB\n"
@@ -50,9 +50,31 @@ task :getcontactcalldata do
 
 	rows.each do |row_data|
 	  print "Processing row where call_id=#{row_data["call_id"]} ..."
-	  db_row = ContactCallData.get(:call_id => row_data["call_id"]).to_i
+	  db_row = ContactCallData.get(:call_id => row_data["call_id"])
 	  begin 
 	    if ContactCallData.create(row_data)
+	      print " ... inserted it int the DB\n"
+	    else
+	      print " ... ERROR WHILE INSERTING INTO DB"
+	    end
+	  rescue DataObjects::IntegrityError
+	    # do nothing, you already have a record for that date.. but you might want to update it if the data changes after the fact
+	    print " ... already had that call id in the DB\n"
+	  end
+	end
+	puts "There are #{ContactCallData.count} rows in the database"
+end
+
+task :getcontactcenterfile do
+print "Dowloading file ...."
+result = JSON.parse open('https://data.southbendin.gov/api/views/aiua-8jdv/rows.json?accessType=DOWNLOAD').read
+
+result.each do |result_data|
+	result_data["call_id"] = result_data["call_id"].to_i
+	print "Processing row where call_id=#{result_data["call_id"]} ..."
+	db_row = ContactCallData.get(:call_id => result_data["call_id"])
+	begin 
+	    if ContactCallData.create(result_data)
 	      print " ... inserted it int the DB\n"
 	    else
 	      print " ... ERROR WHILE INSERTING INTO DB"
