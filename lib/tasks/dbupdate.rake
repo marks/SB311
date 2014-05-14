@@ -5,7 +5,7 @@ task :loaddatabase do
 
 	http = Net::HTTP.new(uri.host, uri.port)
 	http.use_ssl = true
-	http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+	http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 	request = Net::HTTP::Get.new(uri.request_uri)
 	request.add_field(ENV['SOCRATA_API_KEY'], ARGV[0])
@@ -20,7 +20,7 @@ task :loaddatabase do
 	  db_row = DailyCallData.get(:date => row_data["date"])
 	  begin 
 	    if DailyCallData.create(row_data)
-	      print " ... inserted it int the DB\n"
+	      print " ... inserted it into the DB\n"
 	    else
 	      print " ... ERROR WHILE INSERTING INTO DB"
 	    end
