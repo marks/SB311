@@ -1,11 +1,9 @@
 # this code runs before the server is started
 task :loaddatabase do 	
 	print "Fetching and parsing aggregate call data from web service ... "
-	uri = URI('https://data.southbendin.gov/resource/contact-service-queue-activity.json?')
+	uri = URI('http://data.southbendin.gov/resource/contact-service-queue-activity.json?')
 
 	http = Net::HTTP.new(uri.host, uri.port)
-	http.use_ssl = true
-	http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
 	request = Net::HTTP::Get.new(uri.request_uri)
 	request.add_field(ENV['SOCRATA_API_KEY'], ARGV[0])
